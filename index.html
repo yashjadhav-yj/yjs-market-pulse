@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YJ's Market Pulse</title>
+  <meta name="description" content="YJ's personal Indian stock market dashboard — live Nifty & Sensex data, market health interpreter, portfolio overview, and investment playbook." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ========== HEADER ========== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="brand-logo">📈</span>
+        <div>
+          <h1 class="brand-title">YJ's Market Pulse</h1>
+          <p class="brand-sub">Indian Market Dashboard</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="last-updated" id="lastUpdated">
+          <span class="update-label">Updated</span>
+          <span class="update-time" id="updateTime">--</span>
+        </div>
+        <button class="refresh-btn" id="refreshBtn" title="Refresh data" aria-label="Refresh market data">
+          <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ========== SECTION 1: LIVE MARKET SCOREBOARD ========== -->
+    <section class="section" id="sectionScoreboard">
+      <div class="section-header">
+        <span class="section-icon">🔴</span>
+        <h2 class="section-title">Live Market Scoreboard</h2>
+        <span class="live-badge" id="liveBadge">LIVE</span>
+      </div>
+
+      <div class="index-cards-grid">
+        <!-- NIFTY 50 -->
+        <div class="index-card" id="niftyCard">
+          <div class="index-card-top">
+            <div class="index-info">
+              <p class="index-name">NIFTY 50</p>
+              <p class="index-exchange">NSE · India</p>
+            </div>
+            <div class="index-badge nifty-badge">^NSEI</div>
+          </div>
+          <div class="index-price-row">
+            <span class="index-price" id="niftyPrice">--</span>
+            <span class="index-change-badge" id="niftyChangeBadge">--</span>
+          </div>
+          <div class="index-change-row">
+            <span class="index-pts" id="niftyPts">-- pts</span>
+            <span class="index-pct" id="niftyPct">--%</span>
+          </div>
+          <div class="sparkline-section">
+            <div class="sparkline-tabs">
+              <button class="spark-tab active" data-index="nifty" data-range="5d">5D</button>
+              <button class="spark-tab" data-index="nifty" data-range="1mo">1M</button>
+            </div>
+            <div class="sparkline-wrap">
+              <canvas class="sparkline-canvas" id="niftySparkline" width="280" height="70"></canvas>
+              <div class="sparkline-loader" id="niftyLoader">
+                <div class="loader-dots"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="index-meta">
+            <div class="meta-item">
+              <span class="meta-label">Day Low</span>
+              <span class="meta-val" id="niftyLow">--</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Day High</span>
+              <span class="meta-val" id="niftyHigh">--</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Prev Close</span>
+              <span class="meta-val" id="niftyPrev">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SENSEX -->
+        <div class="index-card" id="sensexCard">
+          <div class="index-card-top">
+            <div class="index-info">
+              <p class="index-name">BSE SENSEX</p>
+              <p class="index-exchange">BSE · India</p>
+            </div>
+            <div class="index-badge sensex-badge">^BSESN</div>
+          </div>
+          <div class="index-price-row">
+            <span class="index-price" id="sensexPrice">--</span>
+            <span class="index-change-badge" id="sensexChangeBadge">--</span>
+          </div>
+          <div class="index-change-row">
+            <span class="index-pts" id="sensexPts">-- pts</span>
+            <span class="index-pct" id="sensexPct">--%</span>
+          </div>
+          <div class="sparkline-section">
+            <div class="sparkline-tabs">
+              <button class="spark-tab active" data-index="sensex" data-range="5d">5D</button>
+              <button class="spark-tab" data-index="sensex" data-range="1mo">1M</button>
+            </div>
+            <div class="sparkline-wrap">
+              <canvas class="sparkline-canvas" id="sensexSparkline" width="280" height="70"></canvas>
+              <div class="sparkline-loader" id="sensexLoader">
+                <div class="loader-dots"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="index-meta">
+            <div class="meta-item">
+              <span class="meta-label">Day Low</span>
+              <span class="meta-val" id="sensexLow">--</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Day High</span>
+              <span class="meta-val" id="sensexHigh">--</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Prev Close</span>
+              <span class="meta-val" id="sensexPrev">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NIFTY & SENSEX Composition Note -->
+      <div class="composition-note card">
+        <div class="comp-row">
+          <div class="comp-item">
+            <span class="comp-icon">🔵</span>
+            <div>
+              <p class="comp-title">NIFTY 50</p>
+              <p class="comp-desc">Top <strong>50 companies</strong> listed on NSE. Sectors: Banking, IT, Energy, Auto, FMCG, Pharma & more. Represents ~65% of NSE's total market cap.</p>
+            </div>
+          </div>
+          <div class="comp-divider"></div>
+          <div class="comp-item">
+            <span class="comp-icon">🟠</span>
+            <div>
+              <p class="comp-title">BSE SENSEX</p>
+              <p class="comp-desc">Top <strong>30 companies</strong> listed on BSE. Oldest Indian index (since 1986). Includes giants like Reliance, TCS, HDFC Bank, Infosys & Bharti Airtel.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SECTION 2: MARKET HEALTH INTERPRETER ========== -->
+    <section class="section" id="sectionHealth">
+      <div class="section-header">
+        <span class="section-icon">🧠</span>
+        <h2 class="section-title">Layman Market Health</h2>
+        <button class="glossary-btn" id="glossaryBtn" aria-label="Open glossary">
+          📖 Glossary
+        </button>
+      </div>
+
+      <div class="health-card card" id="healthCard">
+        <div class="health-icon-wrap" id="healthIconWrap">
+          <span class="health-icon" id="healthIcon">🤔</span>
+        </div>
+        <div class="health-text">
+          <p class="health-headline" id="healthHeadline">Fetching market pulse…</p>
+          <p class="health-sub" id="healthSub">Data loads shortly.</p>
+        </div>
+        <div class="health-meter-wrap">
+          <div class="health-meter-labels">
+            <span>Fear</span><span>Neutral</span><span>Greed</span>
+          </div>
+          <div class="health-meter-track">
+            <div class="health-meter-fill" id="healthMeterFill"></div>
+            <div class="health-meter-thumb" id="healthMeterThumb"></div>
+          </div>
+        </div>
+        <div class="health-nifty-ref" id="healthNiftyRef">
+          <span>Nifty Change Today:</span>
+          <strong id="healthNiftyPct">--%</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SECTION 3: PORTFOLIO STATUS ========== -->
+    <section class="section" id="sectionPortfolio">
+      <div class="section-header">
+        <span class="section-icon">💼</span>
+        <h2 class="section-title">Your Portfolio Snapshot</h2>
+        <span class="section-sub-badge">6 Funds</span>
+      </div>
+
+      <div class="portfolio-grid" id="portfolioGrid">
+        <!-- Cards injected by JS -->
+      </div>
+
+      <div class="portfolio-note card">
+        <p>⚠️ <strong>Note:</strong> Fund ratings & data shown here are based on publicly available information as of <span id="portfolioDate">--</span>. Always cross-check with <a href="https://www.valueresearchonline.com" target="_blank" rel="noopener" class="inline-link">Value Research</a> or <a href="https://www.mfcentral.com" target="_blank" rel="noopener" class="inline-link">MF Central</a> for the latest NAV.</p>
+      </div>
+    </section>
+
+    <!-- ========== SECTION 4: AGENT & PORTFOLIO PLAYBOOK ========== -->
+    <section class="section" id="sectionPlaybook">
+      <div class="section-header">
+        <span class="section-icon">📋</span>
+        <h2 class="section-title">Agent &amp; Portfolio Playbook</h2>
+      </div>
+
+      <div class="tabs-wrap">
+        <div class="tab-buttons">
+          <button class="tab-btn active" id="tabBtnA" aria-controls="tabPanelA" aria-selected="true">
+            🤝 Tips for My Agent
+          </button>
+          <button class="tab-btn" id="tabBtnB" aria-controls="tabPanelB" aria-selected="false">
+            ✅ Self-Managed Checklist
+          </button>
+        </div>
+
+        <!-- TAB A -->
+        <div class="tab-panel active" id="tabPanelA" role="tabpanel" aria-labelledby="tabBtnA">
+          <div class="playbook-list">
+            <div class="playbook-item">
+              <div class="playbook-num">01</div>
+              <div class="playbook-content">
+                <h3>Regular vs Direct Plan Audit</h3>
+                <p>Ask your agent to shift all regular plans to their direct equivalents on the same platform (e.g., MFCentral, Groww, Zerodha Coin). Regular plans carry a 0.5–1.5% higher expense ratio — that's money leaving your pocket every year silently.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">02</div>
+              <div class="playbook-content">
+                <h3>ELSS Overlap Clean-Up</h3>
+                <p>You currently hold both Samco ELSS and HDFC ELSS. Review the top-10 holdings of each. If there's >50% stock overlap, one of them is redundant. Diversification is only real if the funds hold different companies.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">03</div>
+              <div class="playbook-content">
+                <h3>Monitor RankMF Rankings</h3>
+                <p><a href="https://www.rankmf.com" target="_blank" rel="noopener" class="inline-link">RankMF.com</a> gives a simple rank (1–10) for every fund. Ask your agent to red-flag any fund that drops below Rank 5 for two consecutive quarters — that's a signal to review, not panic-exit.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">04</div>
+              <div class="playbook-content">
+                <h3>Annual Portfolio Review Meeting</h3>
+                <p>Insist on a formal annual review meeting (not just a call). Your agent should bring the XIRR of each fund, not just absolute returns. XIRR adjusts for the timing of your SIPs — it's the honest number.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">05</div>
+              <div class="playbook-content">
+                <h3>Goal-Tagging Each Fund</h3>
+                <p>Every fund in your portfolio should be tagged to a goal (Retirement, Child Education, Emergency Corpus). If your agent can't tell you which fund serves which goal, the portfolio lacks strategy.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">06</div>
+              <div class="playbook-content">
+                <h3>Rebalancing Trigger</h3>
+                <p>Ask your agent to set a rebalancing rule: if any asset class deviates by >10% from the target allocation, trigger a review. This is discipline — not market timing.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB B -->
+        <div class="tab-panel" id="tabPanelB" role="tabpanel" aria-labelledby="tabBtnB">
+          <div class="playbook-list">
+            <div class="playbook-item highlight-item">
+              <div class="playbook-num">★</div>
+              <div class="playbook-content">
+                <h3>ICICI Prudential Large Cap — The Naren Factor</h3>
+                <p>S. Naren is one of India's most respected fund managers, known for contrarian calls. When markets are overheated, Naren builds cash (defensive). When markets fall, he deploys cash aggressively. This "Anchor Strategy" reduces volatility. You benefit most by staying invested during his defensive phases — don't exit because returns temporarily plateau.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">01</div>
+              <div class="playbook-content">
+                <h3>SIP on Market Dip Days</h3>
+                <p>For ICICI Pru Large Cap, consider increasing your SIP amount (step-up) whenever Nifty 50 falls more than 5% in a month. This is the retail investor's version of Naren's strategy — buy more when others are fearful.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">02</div>
+              <div class="playbook-content">
+                <h3>Track AUM Growth</h3>
+                <p>Keep a quarterly eye on ICICI Pru Large Cap's AUM. If it crosses ₹30,000 Cr, a large-cap fund may struggle to generate alpha (too big to buy small/mid gems). Monitor for any style drift.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">03</div>
+              <div class="playbook-content">
+                <h3>Motilal Oswal Focused — Conviction Play</h3>
+                <p>This fund holds a concentrated portfolio (max 30 stocks). It can underperform for long stretches, then deliver sharply. Suitable only if your investment horizon is 7+ years. Don't judge it on 1-year returns.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">04</div>
+              <div class="playbook-content">
+                <h3>SBI Multicap — The Balanced Bet</h3>
+                <p>SEBI mandates multicap funds to hold at least 25% each in Large, Mid, and Small cap. SBI Multicap gives you automatic exposure across the market cap spectrum. Good as a core holding. Check its small-cap allocation during bull runs — it tends to go heavy there.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">05</div>
+              <div class="playbook-content">
+                <h3>Axis ESG — Patience Required</h3>
+                <p>ESG funds underperform during commodity/energy bull cycles (since they exclude heavy polluters). Axis ESG Strategy has had a rough 2–3 years. If you believe in ESG as a theme long-term (10+ years), stay put. Otherwise, reassess its role in your portfolio.</p>
+              </div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-num">06</div>
+              <div class="playbook-content">
+                <h3>Kotak Midcap — Buckle Up</h3>
+                <p>Midcap funds are volatile — expect 20–30% drawdowns in bad years. Kotak Midcap has a strong track record. Ensure this is money you won't need for at least 5–7 years. Never redeem in a dip — that's where midcap destroys value for impatient investors.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== GLOSSARY MODAL ========== -->
+  <div class="modal-overlay" id="glossaryModal" role="dialog" aria-modal="true" aria-labelledby="glossaryTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="glossaryTitle">📖 Investor Glossary</h2>
+        <button class="modal-close" id="glossaryClose" aria-label="Close glossary">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="glossary-item">
+          <div class="glossary-icon">🐂</div>
+          <div>
+            <h3>Bull Market</h3>
+            <p>When the market is rising or expected to rise. Investors are optimistic. Like a bull charging upward with its horns. A Bull Run usually means stocks are consistently going up for weeks or months.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">🐻</div>
+          <div>
+            <h3>Bear Market</h3>
+            <p>When the market falls 20% or more from its peak. Investors are pessimistic. Like a bear swiping downward with its paw. During a bear market, patience and SIP discipline are your best friends.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">😱</div>
+          <div>
+            <h3>VIX (Volatility Index)</h3>
+            <p>India VIX measures how "nervous" or "calm" the market is. A high VIX (above 20) = fear &amp; wild swings. A low VIX (below 15) = calm &amp; stable markets. Think of it as the market's "heartbeat speed."</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">🔵</div>
+          <div>
+            <h3>NIFTY 50 — What's in it?</h3>
+            <p>50 largest companies on NSE (National Stock Exchange). Examples: Reliance Industries, TCS, HDFC Bank, Infosys, ICICI Bank, L&T, ITC, Bajaj Finance. It covers ~65% of NSE's total market capitalization. Sectors: Banking &amp; Finance (~35%), IT (~14%), Energy (~12%), Consumer (~10%), and more.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">🟠</div>
+          <div>
+            <h3>SENSEX — What's in it?</h3>
+            <p>30 oldest and most established companies on BSE (Bombay Stock Exchange). Launched in 1986 — India's oldest index. Companies: Reliance, TCS, HDFC Bank, Infosys, Hindustan Unilever, Wipro, Maruti Suzuki, Nestle India, Sun Pharma, Asian Paints, and 20 more blue-chips. A single-day 1,000-point Sensex move is roughly a 1.5% move.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">💹</div>
+          <div>
+            <h3>XIRR</h3>
+            <p>Extended Internal Rate of Return — the real return on your SIP investments, adjusted for when you invested. Always judge your mutual funds by XIRR, not just "absolute returns." A 20% return on ₹1 lakh is very different from 20% on ₹10 lakh.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">📉</div>
+          <div>
+            <h3>Drawdown</h3>
+            <p>How much a fund/index fell from its peak before recovering. A 30% drawdown means it went from ₹100 to ₹70. Good funds recover faster. Midcap &amp; small cap funds have higher drawdowns — that's the price you pay for higher long-term returns.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">🧾</div>
+          <div>
+            <h3>ELSS (Tax Saving Funds)</h3>
+            <p>Equity Linked Saving Scheme — mutual funds that give you a tax deduction under Section 80C (up to ₹1.5 lakh/year). They have a 3-year lock-in but invest in equities for long-term growth. The lock-in is per SIP instalment.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">📊</div>
+          <div>
+            <h3>Expense Ratio</h3>
+            <p>The annual fee a mutual fund charges you, expressed as a % of your invested amount. Direct plans have lower expense ratios (0.1–0.8%) vs Regular plans (0.5–1.8%). Over 20 years, even a 1% difference can mean lakhs of rupees lost to fees.</p>
+          </div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-icon">🎯</div>
+          <div>
+            <h3>ESG Investing</h3>
+            <p>Environmental, Social, and Governance — investing in companies that score well on these factors. ESG funds avoid heavy polluters, companies with poor labour practices, or weak governance. They may underperform during commodity booms but aim for sustainable long-term growth.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="app-footer">
+    <p>Built for <strong>YJ</strong> · Data via Yahoo Finance API · For educational purposes only · Not SEBI registered investment advice.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
